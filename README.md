@@ -1,18 +1,18 @@
 # omnibank/qonto
 
-Qonto for [glitchr/omnibank](https://github.com/glitchr-studio/omnibank): the organization's
+Qonto for [omniscient/omnibank](https://github.com/glitchr-studio/omnibank): the organization's
 accounts, their balances and their settled transactions, over Qonto's Business API with an API key.
 
 > **Unverified.** Written from Qonto's published API documentation and recorded answers
 > (`Tests/Fixtures`); it has not yet been run against a real Qonto organization or the sandbox.
-> Try it with real keys (`docker compose run --rm omnibank accounts qonto` in `glitchr/omnibank`'s
+> Try it with real keys (`docker compose run --rm omnibank accounts qonto` in `omniscient/omnibank`'s
 > `docker/`) before relying on it, and drop this notice once it holds.
 
 ```php
 $gateway = (new QontoGatewayFactory($http))->create(['login' => '...', 'secret_key' => '...']);   // $http: the application's HTTP client; none given, the factory makes its own
 ```
 
-No framework needed: the package requires `glitchr/omnibank` and `symfony/http-client`. In a
+No framework needed: the package requires `omniscient/omnibank` and `symfony/http-client`. In a
 Symfony application, the same through the bundle's configuration:
 
 ```yaml
