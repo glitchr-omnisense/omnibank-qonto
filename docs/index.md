@@ -162,6 +162,12 @@ omnibank:
 | missing `login` or `secret_key` | `InvalidConfigException` (`The "qonto" gateway needs: secret_key.`) |
 | `transfer()`, `notify()` | `RequestNotSupportedException` |
 
+No failure carries the secret key and the staging token: a transport failure's message has them
+masked as `***` (the key parameters of a URL too), its previous is a copy of the HTTP client's
+exception (the same class and code), and no trace of the chain keeps its arguments, where the
+request's options and headers stood ([No secret in a
+failure](https://github.com/glitchr-omnisense/omnibank/blob/1.x/docs/errors.md#no-secret-in-a-failure)).
+
 ## Verified, and not
 
 - Verified (the package's tests, 8, green on 2026-10-26 in the family's workspace): connect has

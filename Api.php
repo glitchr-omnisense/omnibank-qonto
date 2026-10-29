@@ -3,6 +3,7 @@
 namespace Omnibank\Qonto;
 
 use Omnibank\Exception\ProviderException;
+use Omnibank\Http\Redaction;
 use Omnibank\Exception\UnavailableException;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -42,30 +43,33 @@ final class Api
     public function get(string $path, array $query = []): array
     {
         $url = rtrim($this->host, '/').'/'.ltrim($path, '/').self::query($query);
+        $options = [
+            'headers' => array_filter([
+                'Authorization' => $this->login.':'.$this->secretKey,
+                'Accept' => 'application/json',
+                'X-Qonto-Staging-Token' => $this->stagingToken,
+            ]),
+            'timeout' => $this->timeout,
+        ];
         try {
-            $response = $this->http->request('GET', $url, [
-                'headers' => array_filter([
-                    'Authorization' => $this->login.':'.$this->secretKey,
-                    'Accept' => 'application/json',
-                    'X-Qonto-Staging-Token' => $this->stagingToken,
-                ]),
-                'timeout' => $this->timeout,
-            ]);
+            $response = $this->http->request('GET', $url, $options);
             $status = $response->getStatusCode();
             $content = $response->getContent(false);
         } catch (HttpExceptionInterface $e) {
-            throw new UnavailableException('qonto', 'Qonto cannot be reached: '.$e->getMessage(), null, $e);
+            $secrets = [...Redaction::secrets($url, $options), $this->secretKey, (string) $this->stagingToken];
+
+            throw Redaction::withoutArguments(new UnavailableException('qonto', 'Qonto cannot be reached: '.Redaction::text($e->getMessage(), $secrets), null, Redaction::copy($e, $secrets)));
         }
         if ($status >= 500 || 429 === $status) {
-            throw new UnavailableException('qonto', \sprintf('Qonto answered HTTP %d: try again later.', $status), (string) $status);
+            throw Redaction::withoutArguments(new UnavailableException('qonto', \sprintf('Qonto answered HTTP %d: try again later.', $status), (string) $status));
         }
         $data = '' === $content ? [] : json_decode($content, true);
         if (!\is_array($data)) {
-            throw new UnavailableException('qonto', \sprintf('Qonto answered HTTP %d with a body that is not JSON.', $status), (string) $status);
+            throw Redaction::withoutArguments(new UnavailableException('qonto', \sprintf('Qonto answered HTTP %d with a body that is not JSON.', $status), (string) $status));
         }
         if ($status >= 400) {
             $error = $data['errors'][0] ?? [];
-            throw new ProviderException('qonto', (string) ($error['detail'] ?? $error['message'] ?? $data['message'] ?? \sprintf('HTTP %d', $status)), (string) ($error['code'] ?? $status));
+            throw Redaction::withoutArguments(new ProviderException('qonto', (string) ($error['detail'] ?? $error['message'] ?? $data['message'] ?? \sprintf('HTTP %d', $status)), (string) ($error['code'] ?? $status)));
         }
 
         return $data;
