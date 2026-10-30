@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- Qonto's words mapped onto omnisense/omnibank's (docs.qonto.com): its accounts' kind
+  (`AccountKind::CHECKING`, an external account `UNKNOWN`), its transactions' `category` and else
+  `operation_type` onto `TransactionCategory` (`Categories`, `BankTransaction::$category`), and a
+  401 as `ConnectionState::WRONG_CREDENTIALS` on the `ProviderException`.
+
 ### Fixed
 
 - An `UnavailableException` no longer carries the secret key and the staging token. The message

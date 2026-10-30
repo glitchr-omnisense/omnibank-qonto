@@ -3,6 +3,7 @@
 namespace Omnibank\Qonto;
 
 use Omnibank\Model\Account;
+use Omnibank\Model\AccountKind;
 use Omnibank\Model\Balance;
 use Omnibank\Model\Money;
 
@@ -20,6 +21,7 @@ final class Accounts
     public static function account(array $data): Account
     {
         $id = (string) ($data['id'] ?? $data['slug'] ?? $data['iban'] ?? '');
+        $external = isset($data['is_external_account']) && $data['is_external_account'];
 
         return new Account(
             id: $id,
@@ -27,8 +29,10 @@ final class Accounts
             bic: isset($data['bic']) ? (string) $data['bic'] : null,
             name: (string) ($data['name'] ?? $data['slug'] ?? $id),
             currency: strtoupper((string) ($data['currency'] ?? 'EUR')),
-            type: isset($data['is_external_account']) && $data['is_external_account'] ? 'external' : 'checking',
+            type: $external ? 'external' : 'checking',
             raw: $data,
+            // Qonto's own accounts are current accounts; an account of another bank shown in Qonto says nothing of its kind.
+            kind: $external ? AccountKind::UNKNOWN : AccountKind::CHECKING,
         );
     }
 

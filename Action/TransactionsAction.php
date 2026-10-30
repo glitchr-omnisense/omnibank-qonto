@@ -9,6 +9,7 @@ use Omnibank\Exception\ProviderException;
 use Omnibank\Model\BankTransaction;
 use Omnibank\Model\Money;
 use Omnibank\Qonto\Api;
+use Omnibank\Qonto\Categories;
 use Omnibank\Request\FetchTransactions;
 use Omnibank\Request\Request;
 
@@ -89,6 +90,7 @@ final class TransactionsAction implements ActionInterface, ApiAwareInterface
             counterpartyIban: $transfer['counterparty_account_number'] ?? null,
             reference: isset($line['reference']) && '' !== $line['reference'] ? (string) $line['reference'] : null,
             raw: $line,
+            category: Categories::of($line),
         );
     }
 }

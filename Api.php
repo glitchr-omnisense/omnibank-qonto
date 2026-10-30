@@ -5,6 +5,7 @@ namespace Omnibank\Qonto;
 use Omnibank\Exception\ProviderException;
 use Omnibank\Http\Redaction;
 use Omnibank\Exception\UnavailableException;
+use Omnibank\Model\ConnectionState;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -69,7 +70,7 @@ final class Api
         }
         if ($status >= 400) {
             $error = $data['errors'][0] ?? [];
-            throw Redaction::withoutArguments(new ProviderException('qonto', (string) ($error['detail'] ?? $error['message'] ?? $data['message'] ?? \sprintf('HTTP %d', $status)), (string) ($error['code'] ?? $status)));
+            throw Redaction::withoutArguments(new ProviderException('qonto', (string) ($error['detail'] ?? $error['message'] ?? $data['message'] ?? \sprintf('HTTP %d', $status)), (string) ($error['code'] ?? $status), null, 401 === $status ? ConnectionState::WRONG_CREDENTIALS : null));
         }
 
         return $data;

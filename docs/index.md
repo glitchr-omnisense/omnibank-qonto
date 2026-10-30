@@ -84,6 +84,22 @@ pages). Lists in the query are written as Qonto (Rails) reads them, `key[]=value
 
 The lines are kept between the days asked and sorted oldest first.
 
+## Kinds, categories, states
+
+- **Kind**: Qonto's own accounts are current accounts (`AccountKind::CHECKING`); an external account
+  shown in Qonto (`is_external_account`) says nothing of its kind (`UNKNOWN`).
+- **Categories** (`Categories`, docs.qonto.com, List transactions): a transaction's `category`
+  (`restaurant_and_bar`, `food_and_grocery` FOOD; `transport`, `gas_station` TRANSPORT;
+  `office_rental`, `utility` HOUSING; `online_service`, `subscription` SUBSCRIPTIONS; `tax` TAXES;
+  `salary`, `sales`, `other_income`, `refund` INCOME; `fees`, `finance` BANK_FEES; `atm` CASH;
+  `treasury_and_interco` TRANSFER; the business spendings BUSINESS...); `fallback` and `pending`
+  are none yet. Without one, the `operation_type`: `transfer`, `swift_income` TRANSFER; `income`,
+  `card_acquirer_payout`, `account_remuneration` INCOME; `qonto_fee` BANK_FEES; `cheque` CASH;
+  `financing_installment`, `pay_later` LOAN; `investment` SAVINGS; `f24` TAXES.
+- **State**: a 401 (the API key refused) is a `ProviderException` whose `connectionState` is
+  `WRONG_CREDENTIALS`; an outage stays an `UnavailableException` (`ConnectionState::ofFailure()`:
+  BANK_UNAVAILABLE).
+
 ## Example
 
 On the answers the package's tests keep (`Tests/Fixtures`, written from Qonto's documentation),

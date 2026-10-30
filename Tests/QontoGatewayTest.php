@@ -6,10 +6,14 @@ use Omnibank\Exception\ProviderException;
 use Omnibank\Exception\RequestNotSupportedException;
 use Omnibank\Exception\UnavailableException;
 use Omnibank\GatewayInterface;
+use Omnibank\Model\AccountKind;
 use Omnibank\Model\Connection;
+use Omnibank\Model\ConnectionState;
 use Omnibank\Model\ConsentStatus;
 use Omnibank\Model\Money;
+use Omnibank\Model\TransactionCategory;
 use Omnibank\Model\Transfer as TransferModel;
+use Omnibank\Qonto\Categories;
 use Omnibank\Qonto\QontoGatewayFactory;
 use Omnibank\Request\Notify;
 use Omnibank\Request\Transfer;
@@ -98,6 +102,8 @@ final class QontoGatewayTest extends TestCase
         self::assertNull($card->counterpartyIban);
         self::assertSame('4242', $card->raw['card_last_digits']);
         self::assertSame(-530000, $salary->amount->amount);
+        self::assertSame([TransactionCategory::INCOME, TransactionCategory::FOOD, TransactionCategory::INCOME], [$credit->category, $card->category, $salary->category], 'other_income, food_and_grocery, salary');
+        self::assertSame(AccountKind::CHECKING, $account->kind);
 
         $transactionCalls = array_values(array_filter($this->calls, static fn ($c) => str_contains($c[1], '/v2/transactions')));
         self::assertCount(2, $transactionCalls);
@@ -143,6 +149,20 @@ final class QontoGatewayTest extends TestCase
         } catch (ProviderException $e) {
             self::assertSame('[qonto] Invalid credentials', $e->getMessage());
             self::assertSame('unauthorized', $e->providerCode);
+            self::assertSame(ConnectionState::WRONG_CREDENTIALS, $e->connectionState, 'the API key refused');
+        }
+    }
+
+    public function testCategoriesThenOperationTypes(): void
+    {
+        self::assertSame(TransactionCategory::TRANSPORT, Categories::of(['category' => 'gas_station']));
+        self::assertSame(TransactionCategory::UNKNOWN, Categories::of(['category' => 'teleportation']), 'a category Qonto has not published');
+        self::assertNull(Categories::of(['category' => 'fallback', 'operation_type' => 'card']), 'not categorised yet');
+        self::assertSame(TransactionCategory::BANK_FEES, Categories::of(['category' => 'pending', 'operation_type' => 'qonto_fee']));
+        self::assertSame(TransactionCategory::TRANSFER, Categories::of(['operation_type' => 'transfer']));
+        self::assertNull(Categories::of(['operation_type' => 'direct_debit']));
+        foreach (['restaurant_and_bar', 'food_and_grocery', 'transport', 'gas_station', 'hotel_and_lodging', 'it_and_electronics', 'hardware_and_equipment', 'office_supply', 'office_rental', 'utility', 'insurance', 'logistics', 'online_service', 'legal_and_accounting', 'finance', 'tax', 'salary', 'marketing', 'manufacturing', 'atm', 'other_service', 'other_expense', 'treasury_and_interco', 'sales', 'other_income', 'refund', 'fees', 'subscription', 'voucher'] as $published) {
+            self::assertNotSame(TransactionCategory::UNKNOWN, Categories::of(['category' => $published]), $published);
         }
     }
 
