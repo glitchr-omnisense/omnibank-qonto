@@ -1,0 +1,55 @@
+{
+    "$schema": "https://github.com/glitchr-omnisense/contracts/blob/1.x/resources/usage-policy.schema.json",
+    "provider": "qonto",
+    "rateLimits": [
+        {
+            "max": 1000,
+            "window": "second",
+            "every": 10,
+            "scope": "client-ip",
+            "operations": [],
+            "note": "Qonto's first limit: 1,000 requests every 10 seconds, per IP address (HTTP 429 beyond)."
+        },
+        {
+            "max": 10000,
+            "window": "minute",
+            "every": 10,
+            "scope": "client-ip",
+            "operations": [],
+            "note": "Qonto's second limit: 10,000 requests every 10 minutes, per IP address."
+        }
+    ],
+    "concurrency": null,
+    "rights": {
+        "commercial": "contract",
+        "openSourceRequired": false,
+        "caching": {
+            "permission": "contract",
+            "maxTtl": null
+        },
+        "storage": "contract",
+        "redistribution": "contract",
+        "attribution": {
+            "required": false,
+            "text": null,
+            "url": null,
+            "where": []
+        },
+        "licence": null
+    },
+    "requirements": {
+        "key": true,
+        "userAgent": {
+            "required": false,
+            "pattern": null
+        }
+    },
+    "provenance": {
+        "terms": "https://legal.qonto.com/#template-3jkrm-6fj",
+        "policy": "https://docs.qonto.com/get-started/general/rate-limitations",
+        "verifiedAt": "2026-11-10",
+        "declaredBy": "maintainer",
+        "contact": "https://docs.qonto.com",
+        "notes": "Rate limits read 2026-11-10 on Qonto's developer documentation (per IP address; Qonto also throttles an IP after more than 200 answers 401 within an hour, not declared: it counts failures, not calls). The limits count operations: transactions() pages Qonto's list, one request per page, so a long history is several requests. The Business API is the organization's own access with its API key, governed by the organization's Qonto contract and Qonto's API License Agreement (listed in its Legal Center, whose text could not be read automatically on 2026-11-10), hence the rights 'contract'. It is no PSD2 account information service, so the four-a-day rule of the RTS (Art. 36(5)(b)) does not apply. Read-only in this version: no transfer is sent."
+    }
+}

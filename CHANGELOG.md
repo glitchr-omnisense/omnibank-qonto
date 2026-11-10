@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- On omnisense/contracts: its usage policy as data and Qonto's waits honoured: `policy.json` (1,000 requests every 10 seconds, 10,000 every 10 minutes, per IP address; read 2026-11-10), named in `composer.json`'s `extra.omnisense.policy`; `Api` takes the gateway's `Backoff` (omnisense/omnibank's `Http\Throttle`): no call while Qonto's wait lasts, a 429 a `RateLimitedException` (an `UnavailableException`, its message as before) with its `Retry-After`, never retried. Requires omnisense/contracts. `phpstan.neon` at level max, `phpstan-baseline.neon` what was there (45 errors). `Tests/QontoPolicyTest`.
+
 ### Added
 
 - Qonto's words mapped onto omnisense/omnibank's (docs.qonto.com): its accounts' kind

@@ -1,0 +1,181 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot access offset ''bank_accounts'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Accounts.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: Accounts.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 7
+			path: Accounts.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Accounts\:\:account\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Accounts.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Accounts\:\:balances\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Accounts.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Accounts\:\:fetch\(\) should return list\<array\<string, mixed\>\> but returns list\<array\<mixed, mixed\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Accounts.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: Action/BalancesAction.php
+
+		-
+			message: '#^Cannot access offset ''next_page'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 3
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 4
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Action\\TransactionsAction\:\:transaction\(\) has parameter \$line with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Parameter \$counterpartyIban of class Omnibank\\Model\\BankTransaction constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Parameter \$counterpartyName of class Omnibank\\Model\\BankTransaction constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Action/TransactionsAction.php
+
+		-
+			message: '#^Cannot access offset ''code'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Api.php
+
+		-
+			message: '#^Cannot access offset ''detail'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Api.php
+
+		-
+			message: '#^Cannot access offset ''message'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Api.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Api.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: Api.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: Categories.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Categories\:\:of\(\) has parameter \$line with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Categories.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: QontoGatewayFactory.php
+
+		-
+			message: '#^Parameter \#5 \$stagingToken of class Omnibank\\Qonto\\Api constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: QontoGatewayFactory.php
+
+		-
+			message: '#^Anonymous function should return Symfony\\Component\\HttpClient\\Response\\MockResponse but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Binary operation "\." between ''transactions\-page\-'' and 1\|array\<mixed\>\|string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''\.json'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Method Omnibank\\Qonto\\Tests\\QontoGatewayTest\:\:gateway\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Parameter \#1 \$options of method Omnibank\\GatewayFactory\:\:create\(\) expects array\<string, mixed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Property Omnibank\\Qonto\\Tests\\QontoGatewayTest\:\:\$calls \(list\<array\{string, string, array\}\>\) does not accept non\-empty\-list\<array\{string, string, mixed\}\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Tests/QontoGatewayTest.php
+
+		-
+			message: '#^Property Omnibank\\Qonto\\Tests\\QontoGatewayTest\:\:\$calls type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Tests/QontoGatewayTest.php

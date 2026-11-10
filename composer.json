@@ -2,16 +2,46 @@
     "name": "omnibank/qonto",
     "type": "library",
     "description": "Omnibank Qonto: a Qonto organization's accounts, balances and transactions over its Business API, with an API key.",
-    "keywords": ["bank", "qonto", "omnibank"],
+    "keywords": [
+        "bank",
+        "qonto",
+        "omnibank"
+    ],
     "license": "MIT",
-    "authors": [{"name": "Marco Meyer", "email": "marco.meyer@glitchr.io"}],
+    "authors": [
+        {
+            "name": "Marco Meyer",
+            "email": "marco.meyer@glitchr.io"
+        }
+    ],
     "require": {
         "php": ">=8.2",
+        "omnisense/contracts": "^1.0@dev",
         "omnisense/omnibank": "^1.0@dev",
         "symfony/http-client": "^6.4|^7.0|^8.0"
     },
-    "require-dev": {"phpunit/phpunit": "^11.0"},
-    "autoload": {"psr-4": {"Omnibank\\Qonto\\": ""}, "exclude-from-classmap": ["/Tests/"]},
-    "autoload-dev": {"psr-4": {"Omnibank\\Qonto\\Tests\\": "Tests/"}},
-    "config": {"sort-packages": true}
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Omnibank\\Qonto\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Omnibank\\Qonto\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "omnisense": {
+            "policy": "policy.json"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
 }

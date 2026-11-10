@@ -4,8 +4,10 @@ namespace Omnibank\Qonto;
 
 use Omnibank\Exception\ProviderException;
 use Omnibank\Http\Redaction;
+use Omnibank\Http\Throttle;
 use Omnibank\Exception\UnavailableException;
 use Omnibank\Model\ConnectionState;
+use Omnisense\Contracts\Policy\Backoff;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -27,6 +29,8 @@ final class Api
         private readonly string $host = self::HOST,
         private readonly ?string $stagingToken = null,
         private readonly int $timeout = 20,
+        /** The waits Qonto asks for (omnisense/contracts' Backoff): no call while one lasts, a 429 a RateLimitedException, never retried */
+        private readonly ?Backoff $backoff = null,
     ) {
     }
 
@@ -39,7 +43,8 @@ final class Api
      * @return array<mixed> the JSON answer
      *
      * @throws ProviderException   when Qonto refuses (4xx)
-     * @throws UnavailableException when Qonto cannot be reached or fails (network, 5xx, 429)
+     * @throws UnavailableException when Qonto cannot be reached or fails (network, 5xx, 429: a RateLimitedException)
+     * @throws \Omnibank\Exception\UsageLimitReachedException while Qonto's wait lasts (nothing sent)
      */
     public function get(string $path, array $query = []): array
     {
@@ -52,16 +57,19 @@ final class Api
             ]),
             'timeout' => $this->timeout,
         ];
+        Throttle::before($this->backoff);
         try {
             $response = $this->http->request('GET', $url, $options);
             $status = $response->getStatusCode();
+            $received = $response->getHeaders(false);
             $content = $response->getContent(false);
         } catch (HttpExceptionInterface $e) {
             $secrets = [...Redaction::secrets($url, $options), $this->secretKey, (string) $this->stagingToken];
 
             throw Redaction::withoutArguments(new UnavailableException('qonto', 'Qonto cannot be reached: '.Redaction::text($e->getMessage(), $secrets), null, Redaction::copy($e, $secrets)));
         }
-        if ($status >= 500 || 429 === $status) {
+        Throttle::after($this->backoff, 'qonto', $status, $received, \sprintf('Qonto answered HTTP %d: try again later.', $status));
+        if ($status >= 500) {
             throw Redaction::withoutArguments(new UnavailableException('qonto', \sprintf('Qonto answered HTTP %d: try again later.', $status), (string) $status));
         }
         $data = '' === $content ? [] : json_decode($content, true);

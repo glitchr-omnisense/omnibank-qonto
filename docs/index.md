@@ -167,6 +167,16 @@ omnibank:
                 staging_token: '%env(QONTO_STAGING_TOKEN)%'
 ```
 
+## Usage policy
+
+`policy.json` (named in `composer.json`'s `extra.omnisense.policy`, read 2026-11-10 on
+[Qonto's rate limitations](https://docs.qonto.com/get-started/general/rate-limitations)): 1,000
+requests every 10 seconds and 10,000 every 10 minutes, per IP address. Qonto also throttles an IP
+after 200 answers 401 within an hour (not counted by the guard). The rights are the organization's
+Qonto contract and Qonto's API License Agreement (`contract`). A 429 is a `RateLimitedException` (an `UnavailableException`, as
+before), never retried, and Qonto's next calls wait for its `Retry-After`, unsent. This version
+only reads. See omnisense/omnibank's [Usage policies and rate limits](https://github.com/glitchr-omnisense/omnibank/blob/1.x/docs/policies.md).
+
 ## Errors
 
 | Qonto's answer | Exception |
