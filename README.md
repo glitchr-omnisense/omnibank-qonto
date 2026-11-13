@@ -8,6 +8,40 @@ accounts, their balances and their settled transactions, over Qonto's Business A
 > Try it with real keys (`docker compose run --rm omnibank accounts qonto` in `omnisense/omnibank`'s
 > `docker/`) before relying on it, and drop this notice once it holds.
 
+## Install and a first call
+
+```sh
+composer require omnibank/qonto
+```
+
+No account for this first call: Qonto's answer is recorded (Symfony's `MockHttpClient` answers in
+place of the API), so nothing leaves the process. With your own credentials, give the factory your
+HTTP client (or none: it makes its own).
+
+```php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Omnibank\Model\Connection;
+use Omnibank\Qonto\QontoGatewayFactory;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
+
+// Qonto's answer (the organization and its accounts), recorded: no account, and nothing leaves the process.
+$http = new MockHttpClient(new MockResponse('{"organization": {"slug": "acme-1234", "bank_accounts": [{"id": "7d3c9c4e-2b1f-4a7e-8d61-0b5f1e2a9c01", "iban": "FR5116958000011234567890142",
+    "bic": "QNTOFRP1XXX", "currency": "EUR", "name": "Main account", "balance_cents": 1843217, "authorized_balance_cents": 1810217, "updated_at": "2026-09-30T21:04:11.000Z", "status": "active"}]}}'));
+$gateway = (new QontoGatewayFactory($http))->create(['login' => 'acme-1234', 'secret_key' => 'not-a-key']);
+
+foreach ($gateway->accounts(new Connection()) as $account) {
+    echo $account->name, ' ', $account->iban, "\n";   // Main account FR5116958000011234567890142
+}
+```
+
+A real call needs a Qonto business account: its login and secret key (below). Unverified: see above.
+
+## Configuration
+
 ```php
 $gateway = (new QontoGatewayFactory($http))->create(['login' => '...', 'secret_key' => '...']);   // $http: the application's HTTP client; none given, the factory makes its own
 ```
