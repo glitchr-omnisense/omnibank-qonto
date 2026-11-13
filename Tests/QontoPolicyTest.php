@@ -92,7 +92,7 @@ final class QontoPolicyTest extends TestCase
             return $answer();
         });
 
-        return new Registry([new QontoGatewayFactory($http)], ['treasury' => ['factory' => 'qonto', 'options' => ['login' => 'nakaya-sas-1234', 'secret_key' => 'sk_qonto'], 'policy' => $policy]]);
+        return new Registry([new QontoGatewayFactory($http)], ['treasury' => ['factory' => 'qonto', 'options' => ['login' => 'example-sas-1234', 'secret_key' => 'sk_qonto'], 'policy' => $policy]]);
     }
 
     private static function organization(): string

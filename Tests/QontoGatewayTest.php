@@ -42,7 +42,7 @@ final class QontoGatewayTest extends TestCase
             };
         });
 
-        return (new QontoGatewayFactory($http))->create($options + ['login' => 'nakaya-sas-1234', 'secret_key' => 'sk_qonto']);
+        return (new QontoGatewayFactory($http))->create($options + ['login' => 'example-sas-1234', 'secret_key' => 'sk_qonto']);
     }
 
     private static function fixture(string $name): string
@@ -76,7 +76,7 @@ final class QontoGatewayTest extends TestCase
         [$method, $url, $headers] = $this->calls[0];
         self::assertSame('GET', $method);
         self::assertSame('https://thirdparty.qonto.com/v2/organization', $url);
-        self::assertContains('Authorization: nakaya-sas-1234:sk_qonto', $headers, 'login:secret-key, no scheme');
+        self::assertContains('Authorization: example-sas-1234:sk_qonto', $headers, 'login:secret-key, no scheme');
 
         $balances = $gateway->balances(new Connection(), $accounts[0]);
         self::assertSame(['booked', 'available'], array_map(static fn ($b) => $b->type, $balances));
@@ -92,7 +92,7 @@ final class QontoGatewayTest extends TestCase
 
         self::assertCount(3, $transactions, 'both pages');
         [$credit, $card, $salary] = $transactions;
-        self::assertSame('nakaya-sas-1234-1-transaction-1042', $credit->id);
+        self::assertSame('example-sas-1234-1-transaction-1042', $credit->id);
         self::assertTrue($credit->amount->equals(Money::of(125000, 'EUR')));
         self::assertSame('Camille Durand', $credit->counterpartyName);
         self::assertSame('FR1420041010050500013M02606', $credit->counterpartyIban);
